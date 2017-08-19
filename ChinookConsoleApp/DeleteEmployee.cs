@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -15,18 +17,15 @@ namespace ChinookConsoleApp
             var employeeList = new ListEmployees();
             var firedEmployee = employeeList.List("Pick an employee to fire");
 
-            using (var connection = new SqlConnection("Server = (local)\\SqlExpress; Database=chinook;Trusted_Connection=True;"))
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Chinook"].ConnectionString))
             {
                 connection.Open();
-                var cmd = connection.CreateCommand();
-                cmd.CommandText = "delete from Employee where EmployeeId = @EmployeeId";
-
-                var employeeIdParameter = cmd.Parameters.Add("@EmployeeId", SqlDbType.Int);
-                employeeIdParameter.Value = (firedEmployee);
 
                 try
                 {
-                    var affectedRows = cmd.ExecuteNonQuery();
+
+                    var affectedRows = connection.Execute(  "delete from Employee where EmployeeId = @EmployeeId",
+                                                            new {EmployeeId = firedEmployee });
                     if (affectedRows == 1)
                     {
                         Console.WriteLine("Success");

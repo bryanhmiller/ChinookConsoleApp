@@ -29,8 +29,6 @@ namespace ChinookConsoleApp
                 if (selection == "3") new UpdateEmployee().Update();
                 if (selection == "4") new DeleteEmployee().Delete();
                 if (selection == "9") break;
-
-                Console.ReadLine();
             }
         }
     }

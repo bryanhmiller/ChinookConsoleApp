@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using Dapper;
+using System.Configuration;
 
 namespace ChinookConsoleApp
 {
@@ -15,9 +16,9 @@ namespace ChinookConsoleApp
         public int List(string prompt)
         {
 
-            using (var connection = new SqlConnection("Server = (local)\\SqlExpress; Database=chinook;Trusted_Connection=True;"))
-            { 
-                           
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Chinook"].ConnectionString))
+            {
+
 
                 try
                 {
@@ -31,7 +32,10 @@ namespace ChinookConsoleApp
                     }
 
                     Console.WriteLine(prompt);
-                    return int.Parse(Console.ReadLine());
+
+                    var wasInt = int.TryParse(Console.ReadLine(), out var entry);
+
+                    return wasInt ? entry: 0;
                 }
                 catch(Exception ex)
                 {

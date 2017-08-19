@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,8 +14,36 @@ namespace ChinookConsoleApp
     {
         public void Update()
         {
-            using (var connection = new SqlConnection("Server = (local)\\SqlExpress; Database=chinook;Trusted_Connection=True;"))
+            var employeeList = new ListEmployees();
+            var employeeUpdate = employeeList.List("Pick an employee to change their name");
+
+            Console.WriteLine("Enter first name:");
+            var firstName = Console.ReadLine();
+            Console.WriteLine("Enter last name:");
+            var lastName = Console.ReadLine();
+
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Chinook"].ConnectionString))
             {
+                try
+                {
+                    var rowsAffected = connection.Execute(  "Update Employee " + 
+                                                            "Set FirstName = @firstName, LastName = @lastName " + 
+                                                            "Where EmployeeId = @employeeUpdate ",
+                                                            new {   EmployeeUpdate = employeeUpdate,
+                                                                    FirstName = firstName,
+                                                                    LastName = lastName});
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+
+                Console.WriteLine("Press enter to return to the menu.");
+                Console.ReadLine();
+
+//          Previously written code
+/*
                 var employeeListCommand = connection.CreateCommand();
 
                 employeeListCommand.CommandText = "select * from Employee";
@@ -38,10 +67,6 @@ namespace ChinookConsoleApp
              
                 Console.WriteLine("Please enter the number of the entry you want to change");
                 var selection = Console.ReadLine();
-                Console.WriteLine("Enter first name:");
-                var firstName = Console.ReadLine();
-                Console.WriteLine("Enter last name:");
-                var lastName = Console.ReadLine();
 
                 var employeeUpdate = connection.CreateCommand();
                 employeeUpdate.CommandText =    "Update Employee" +
@@ -56,20 +81,7 @@ namespace ChinookConsoleApp
 
                 var lastNameparameter = employeeUpdate.Parameters.Add("@lastName", SqlDbType.VarChar);
                 lastNameparameter.Value = lastName;
-
-                try
-                {
-                    var rowsAffected = employeeUpdate.ExecuteNonQuery();
-                    Console.WriteLine(rowsAffected != 1 ? "Update Failed" : "Success!");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
-
-                Console.WriteLine("Press enter to return to the menu.");
-                Console.ReadLine();
+*/
             }
         }
     }
