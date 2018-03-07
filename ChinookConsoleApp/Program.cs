@@ -19,6 +19,7 @@ namespace ChinookConsoleApp
                 Console.WriteLine("2. Add Employees");
                 Console.WriteLine("3. Update Employees");
                 Console.WriteLine("4. Delete Employees");
+                Console.WriteLine("5. Employee sales for individual years");
                 Console.WriteLine("9. Exit");
                 Console.WriteLine("");
                 Console.Write(">");
@@ -28,9 +29,8 @@ namespace ChinookConsoleApp
                 if (selection == "2") new AddEmployee().Add();
                 if (selection == "3") new UpdateEmployee().Update();
                 if (selection == "4") new DeleteEmployee().Delete();
+                if (selection == "5") new SalesYearsList().ListYear();
                 if (selection == "9") break;
-
-                Console.ReadLine();
             }
         }
     }

@@ -18,9 +18,8 @@ namespace ChinookConsoleApp
             var firstName = Console.ReadLine();
             Console.WriteLine("Enter last name:");
             var lastName = Console.ReadLine();
-
-            using (var connection = new SqlConnection("Server = (local)\\SqlExpress; Database=chinook;Trusted_Connection=True;"))
-//            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Chinook"].ConnectionString))
+            
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Chinook"].ConnectionString))
             {
 
                 try
@@ -28,7 +27,8 @@ namespace ChinookConsoleApp
                     connection.Open();
 
                     var rowsAffected = connection.Execute(  "Insert into Employee(Firstname, LastName) " +
-                                                            "Values(@firstName,@lastName)", new {FirstName = firstName, LastName = lastName});
+                                                            "Values(@firstName,@lastName)", 
+                                                            new {FirstName = firstName, LastName = lastName});
                     
                     Console.WriteLine(rowsAffected != 1 ? "Add Failed" : "Success!");
                 }
